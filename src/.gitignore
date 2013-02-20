@@ -1,0 +1,6 @@
+build/
+mpirun
+mpirun.c
+zmpi.c
+zmpi.h
+zmpi.so
