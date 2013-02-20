@@ -15,13 +15,14 @@
 #  You should have received a copy of the GNU Lesser General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import os
+
 cdef public int MPI_COMM_WORLD = 0
-cdef int COMM_RANK
-cdef int COMM_SIZE
+cdef int COMM_RANK = int(os.environ.get("ZMPI_RANK", "0"))
+cdef int COMM_SIZE = int(os.environ.get("ZMPI_SIZE", "0"))
 
 cdef public void ZMPI_Init(int *argc, char ***argv):
     print "calling INIT", <int> argc[0]
-    COMM_RANK = 0
     for i in range(argc[0]):
         print 'arguments', argv[0][i]
 

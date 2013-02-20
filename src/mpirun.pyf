@@ -15,6 +15,35 @@
 #  You should have received a copy of the GNU Lesser General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+DEBUG=True
+
+import argparse
+import os
+import subprocess
 import sys
 
-print "Running mpirun with arguments", sys.argv
+parser = argparse.ArgumentParser(description='Start MPI jobs.')
+parser.add_argument("-np", dest="np", type=int)
+args, pos_args = parser.parse_known_args()
+pos_args = " ".join(pos_args)
+
+if DEBUG:
+    print "Starting %d processes."%args.np
+    print "Executable:", pos_args
+
+#TODO parse hostfile
+#TODO how many processes on this host?
+
+# setup environments
+envs = []
+for i in range(args.np):
+    envs.append(os.environ.copy())
+    envs[i]["ZMPI_RANK"] = str(i)
+    envs[i]["ZMPI_SIZE"] = str(args.np)
+
+pool = []
+for i in range(args.np):
+    pool.append(subprocess.Popen(pos_args, shell=True, env=envs[i]))
+
+for item in pool:
+    item.wait()
