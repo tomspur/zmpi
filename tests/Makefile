@@ -20,13 +20,7 @@ BINARIES=$(TESTS:.c=.c.out)
 		-o $<.out
 
 check:	$(BINARIES)
-	for binary in $(BINARIES) ; do \
-		echo "RUNNING $$binary" ; \
-		LD_LIBRARY_PATH=${PWD}/../src:${LD_LIBRARY_PATH} ./$$binary || die "Running plain $$binary failed" ; \
-		LD_LIBRARY_PATH=${PWD}/../src:${LD_LIBRARY_PATH} ../src/mpirun -np 2 ./$$binary || die "Running plain $$binary failed" ; \
-		LD_LIBRARY_PATH=${PWD}/../src:${LD_LIBRARY_PATH} ../src/mpirun -np 3 ./$$binary || die "Running plain $$binary failed" ; \
-		LD_LIBRARY_PATH=${PWD}/../src:${LD_LIBRARY_PATH} ../src/mpirun -np 5 ./$$binary || die "Running plain $$binary failed" ; \
-	done
+	nosetests -v
 
 clean:
 	rm -vf *.c.out

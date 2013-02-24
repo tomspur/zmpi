@@ -45,5 +45,8 @@ pool = []
 for i in range(args.np):
     pool.append(subprocess.Popen(pos_args, shell=True, env=envs[i]))
 
+ret = []
 for item in pool:
-    item.wait()
+    ret.append(item.wait())
+
+sys.exit(-min(ret))
