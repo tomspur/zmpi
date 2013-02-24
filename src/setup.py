@@ -4,7 +4,7 @@ from Cython.Distutils import build_ext
 
 setup(
     cmdclass = {'build_ext': build_ext},
-    ext_modules = [Extension("zmpi",
+    ext_modules = [Extension("libzmpi",
                              ["zmpi.pyx"],
                   #           libraries = ['mpi_int'],
                   #           library_dirs = ['../include']
