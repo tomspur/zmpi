@@ -34,7 +34,9 @@ cdef class Client(Communication):
     """
     def __cinit__(self):
         super(Client, self).__init__()
-        self.rank = 1111
+        print "Calling Client.__cinit__"
+        self.rank = int(os.environ.get("ZMPI_RANK", "0"))
+        self.size = int(os.environ.get("ZMPI_SIZE", "0"))
 
     def __init__(self):
         super(Client, self).__init__()
