@@ -15,8 +15,6 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-DEBUG=True
-
 import argparse
 import os
 import subprocess
@@ -28,10 +26,6 @@ parser = argparse.ArgumentParser(description='Start MPI jobs.')
 parser.add_argument("-np", dest="np", type=int)
 args, pos_args = parser.parse_known_args()
 pos_args = " ".join(pos_args)
-
-if DEBUG:
-    print "Starting %d processes."%args.np
-    print "Executable:", pos_args
 
 #TODO parse hostfile
 #TODO how many processes on this host?

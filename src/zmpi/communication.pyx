@@ -28,6 +28,7 @@ cdef class Communication:
         self.rank = 0
         self.size = 0
 
+
 cdef class Client(Communication):
     """Client process that encapsulates the MPI layer.
     """
@@ -40,6 +41,9 @@ cdef class Client(Communication):
         print "Calling Client.__init__"
         self.rank = int(os.environ.get("ZMPI_RANK", "0"))
         self.size = int(os.environ.get("ZMPI_SIZE", "0"))
+
+    def __del__(self):
+        print "Calling Client.__del__"
 
 
 cdef class Master(Communication):
@@ -57,7 +61,7 @@ cdef class Master(Communication):
 #        #self.sock_rep_master = self.context.socket(zmq.REP)
 #        #self.port_rep_master = self.sock_rep_master.bind_to_random_port("tcp://*")
         self.port_rep_master = 234
-#
+
     cpdef run(self):
         import subprocess
         # setup environments
@@ -67,7 +71,11 @@ cdef class Master(Communication):
             envs[i]["ZMPI_RANK"] = str(i)
             envs[i]["ZMPI_SIZE"] = str(self.size)
             envs[i]["ZMPI_PORT"] = str(self.port_rep_master)
-        
+
+        if DEBUG:
+            print "Starting %d processes."% self.size
+            print "Executable:", self.cmd
+
         pool = []
         for i in range(self.size):
             pool.append(subprocess.Popen(self.cmd, shell=True, env=envs[i]))

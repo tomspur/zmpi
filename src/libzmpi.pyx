@@ -44,7 +44,6 @@ cdef public void ZMPI_Init(int *argc, char ***argv):
 
 cdef public void ZMPI_Finalize():
     global client
-    print "calling FINALIZE"
     del client
 
 cdef public void MPI_Comm_rank(MPI_Comm comm, int *rank):
