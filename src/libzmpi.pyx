@@ -15,7 +15,12 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import os
+#import os
+
+from zmpi.communication import Client
+from zmpi.communication cimport Client
+
+cpdef client
 
 # data types
 cdef public int MPI_INT = 1
@@ -29,34 +34,37 @@ cdef public struct MPI_Status:
     int state
 
 cdef public int MPI_COMM_WORLD = 0
-cdef int COMM_RANK = int(os.environ.get("ZMPI_RANK", "0"))
-cdef int COMM_SIZE = int(os.environ.get("ZMPI_SIZE", "0"))
 
 cdef public void ZMPI_Init(int *argc, char ***argv):
+    global client
+    client = Client()
     print "calling INIT", <int> argc[0]
     for i in range(argc[0]):
         print 'arguments', argv[0][i]
 
 cdef public void ZMPI_Finalize():
+    global client
     print "calling FINALIZE"
+    del client
 
 cdef public void MPI_Comm_rank(MPI_Comm comm, int *rank):
+    global client
     if comm == MPI_COMM_WORLD:
-        rank[0] = COMM_RANK
+        rank[0] = client.rank
     else:
         raise NotImplementedError
 
 cdef public void MPI_Comm_size(MPI_Comm comm, int *size):
     if comm == MPI_COMM_WORLD:
-        size[0] = COMM_SIZE
+        size[0] = client.size
     else:
         raise NotImplementedError
 
 cdef public void MPI_Send(void *buf, int count, MPI_Datatype datatype, int dest,
-            int tag, MPI_Comm comm):
+                          int tag, MPI_Comm comm):
     pass
 
 cdef public void MPI_Recv(void *buf, int count, MPI_Datatype datatype, int dest,
-            int tag, MPI_Comm comm, MPI_Status *status):
+                          int tag, MPI_Comm comm, MPI_Status *status):
     if status != NULL:
         raise NotImplementedError

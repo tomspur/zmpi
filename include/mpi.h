@@ -21,7 +21,7 @@
 
 /* Expose Python.h into zmpi */
 #include <Python.h>
-#include <zmpi.h>
+#include <libzmpi.h>
 
 /* temporary for printing */
 #include <stdlib.h>
@@ -29,7 +29,7 @@
 /* wrap init and finalize of zmpi */
 void MPI_Init(int *argc, char ***argv) {
     Py_Initialize();
-    initzmpi();
+    initlibzmpi();
     ZMPI_Init(argc, argv);
 };
 

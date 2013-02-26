@@ -19,6 +19,7 @@ import os
 cwd = os.sep.join(__file__.split(os.sep)[:-1])
 env = os.environ.copy()
 env["LD_LIBRARY_PATH"] = cwd + "/../src:" + env.get("LD_LIBRARY_PATH", "")
+env["PYTHONPATH"] = cwd + "/../src:"
 
 def run_cmd(cmd):
     import subprocess
