@@ -30,6 +30,7 @@ pos_args = " ".join(pos_args)
 
 #TODO parse hostfile
 #TODO how many processes on this host?
-master = Master(size=args.np, cmd=pos_args)
+ranks = [i for i in range(args.np)]
+master = Master(size=args.np, ranks=ranks, cmd=pos_args)
 
 sys.exit(master.run())

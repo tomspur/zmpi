@@ -52,8 +52,10 @@ cdef class Master(Communication):
     Each one of them will then be responsible for the starting "worker"
     clients on that node.
     """
-    def __init__(self, size, cmd):
+    def __init__(self, size, ranks, cmd):
         super(Master, self).__init__()
+        assert(len(ranks) == size)
+        self.ranks = ranks
         self.size = size
         self.cmd = cmd
 
@@ -72,7 +74,7 @@ cdef class Master(Communication):
             print "Executable:", self.cmd
 
         pool = []
-        for i in range(self.size):
+        for i in self.ranks:
             pool.append(subprocess.Popen(self.cmd, shell=True, env=envs[i]))
         
         ret = []

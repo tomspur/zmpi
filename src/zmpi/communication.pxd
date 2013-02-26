@@ -33,4 +33,6 @@ cdef class Client(Communication):
 
 cdef class Master(Communication):
     cdef str cmd
+    # TODO ndarray?
+    cdef object ranks
     cpdef run(self)
