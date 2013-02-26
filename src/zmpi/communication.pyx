@@ -17,7 +17,7 @@
 
 #import multiprocessing
 import os
-##import zmq
+import zmq
 
 DEBUG = True
 
@@ -27,17 +27,14 @@ cdef class Communication:
     def __init__(self):
         self.rank = 0
         self.size = 0
+        self.context = zmq.Context()
+        self.sock_pub = self.context.socket(zmq.PUB)
+        self.port_pub = self.sock_pub.bind_to_random_port("tcp://*")
 
 
 cdef class Client(Communication):
     """Client process that encapsulates the MPI layer.
     """
-    def __cinit__(self):
-        super(Client, self).__init__()
-        print "Calling Client.__cinit__"
-        self.rank = int(os.environ.get("ZMPI_RANK", "0"))
-        self.size = int(os.environ.get("ZMPI_SIZE", "0"))
-
     def __init__(self):
         super(Client, self).__init__()
         print "Calling Client.__init__"
@@ -59,10 +56,6 @@ cdef class Master(Communication):
         super(Master, self).__init__()
         self.size = size
         self.cmd = cmd
-#        self.port_rep_master = 0
-#        #self.sock_rep_master = self.context.socket(zmq.REP)
-#        #self.port_rep_master = self.sock_rep_master.bind_to_random_port("tcp://*")
-        self.port_rep_master = 234
 
     cpdef run(self):
         import subprocess
@@ -72,7 +65,7 @@ cdef class Master(Communication):
             envs.append(os.environ.copy())
             envs[i]["ZMPI_RANK"] = str(i)
             envs[i]["ZMPI_SIZE"] = str(self.size)
-            envs[i]["ZMPI_PORT"] = str(self.port_rep_master)
+            envs[i]["ZMPI_PORT_SUB"] = str(self.port_pub)
 
         if DEBUG:
             print "Starting %d processes."% self.size

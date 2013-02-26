@@ -16,8 +16,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #import multiprocessing
+from zmq.core.context cimport Context
+from zmq.core.socket cimport Socket
 
 cdef class Communication:#(multiprocessing.Process):
+    cdef Context context
+    cdef Socket sock_pub
+    cdef Socket sock_sub
+    cdef int port_pub
+    cdef int port_sub
     cdef public int size
     cdef public int rank
 
@@ -25,6 +32,5 @@ cdef class Client(Communication):
     pass
 
 cdef class Master(Communication):
-    cdef int port_rep_master
     cdef str cmd
     cpdef run(self)
