@@ -1,7 +1,7 @@
-all: mpirun libzmpi check
+all: bins libzmpi check
 
-mpirun:
-	cd src; make mpirun
+bins:
+	cd bin; make
 
 libzmpi:
 	cd src; make libzmpi
@@ -12,3 +12,4 @@ check:
 clean:
 	cd src; make clean
 	cd tests; make clean
+	rm -rvf build

@@ -1,8 +1,4 @@
-all: 		libzmpi mpirun
-
-mpirun: 	mpirun.pyx
-	cython --embed mpirun.pyx
-	gcc $(CFLAGS) mpirun.c -o mpirun -I/usr/include/python2.7/ -lpython2.7
+all: 		libzmpi
 
 libzmpi:	libzmpi.pyx
 	python setup.py build_ext --inplace

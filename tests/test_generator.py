@@ -35,6 +35,6 @@ def test_generate():
     files = glob.glob("%s/*.c.out"%cwd)
     for f in files:
         yield run_cmd, "%s"%f
-        yield run_cmd, "%s/../src/mpirun -np 2 %s"%(cwd, f)
-        yield run_cmd, "%s/../src/mpirun -np 3 %s"%(cwd, f)
-        yield run_cmd, "%s/../src/mpirun -np 5 %s"%(cwd, f)
+        yield run_cmd, "%s/../bin/mpirun -np 2 %s"%(cwd, f)
+        yield run_cmd, "%s/../bin/mpirun -np 3 %s"%(cwd, f)
+        yield run_cmd, "%s/../bin/mpirun -np 5 %s"%(cwd, f)

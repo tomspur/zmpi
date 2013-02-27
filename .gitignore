@@ -1,3 +1,7 @@
 *.swp
 *.pyc
 *.pyo
+*.c
+*.so
+mpimaster
+mpirun
