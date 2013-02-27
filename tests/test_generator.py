@@ -20,6 +20,7 @@ cwd = os.sep.join(__file__.split(os.sep)[:-1])
 env = os.environ.copy()
 env["LD_LIBRARY_PATH"] = cwd + "/../src:" + env.get("LD_LIBRARY_PATH", "")
 env["PYTHONPATH"] = cwd + "/../src:"
+env["PATH"] = cwd + "/../bin:" + env.get("PATH", "")
 
 def run_cmd(cmd):
     import subprocess
@@ -35,6 +36,6 @@ def test_generate():
     files = glob.glob("%s/*.c.out"%cwd)
     for f in files:
         yield run_cmd, "%s"%f
-        yield run_cmd, "%s/../bin/mpirun -np 2 %s"%(cwd, f)
-        yield run_cmd, "%s/../bin/mpirun -np 3 %s"%(cwd, f)
-        yield run_cmd, "%s/../bin/mpirun -np 5 %s"%(cwd, f)
+        yield run_cmd, "mpirun -np 2 %s"%f
+        yield run_cmd, "mpirun -np 3 %s"%f
+        yield run_cmd, "mpirun -np 5 %s"%f
