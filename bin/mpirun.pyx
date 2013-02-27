@@ -31,6 +31,7 @@ pos_args = " ".join(pos_args)
 #TODO parse hostfile
 #TODO how many processes on this host?
 ranks = [i for i in range(args.np)]
-master = Master(size=args.np, ranks=ranks, cmd=pos_args)
+#TODO setup args.np == size of processes on this host
+proc = subprocess.Popen("mpimaster -np %d --ranks '%s' --cmd '%s'"%(args.np, ranks, pos_args), shell=True)
 
-sys.exit(master.run())
+sys.exit(proc.wait())

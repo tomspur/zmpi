@@ -23,10 +23,13 @@ from zmpi.communication cimport Master
 cdef Master master
 
 parser = argparse.ArgumentParser(description='Start Master of zmpi.')
-parser.add_argument("--ranks", dest="ranks", type=int)
+parser.add_argument("-np", dest="np", type=int)
+parser.add_argument("--ranks", dest="ranks", type=str)
 parser.add_argument("--cmd", dest="cmd", type=str)
 args = parser.parse_args()
 
+# TODO other type in parser?
+args.ranks = eval(args.ranks)
 master = Master(size=args.np, ranks=args.ranks, cmd=args.cmd)
 
 sys.exit(master.run())
