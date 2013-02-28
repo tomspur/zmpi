@@ -8,6 +8,9 @@ ext_modules = [
 #              libraries = ['mpi_int'],
 #              library_dirs = ['../include']
              ),
+    Extension("zmpi.core",
+              ["zmpi/core.pyx"],
+             ),
     Extension("zmpi.communication",
               ["zmpi/communication.pyx"],
              )
