@@ -62,7 +62,7 @@ cdef public void MPI_Send(void *buf, int count, MPI_Datatype datatype, int dest,
 
 cdef public void MPI_Recv(void *buf, int count, MPI_Datatype datatype, int dest,
                           int tag, MPI_Comm comm, MPI_Status *status):
-    if status != NULL:
+    if status != MPI_STATUS_IGNORE:
         raise NotImplementedError
     if dest == client.rank:
         return
