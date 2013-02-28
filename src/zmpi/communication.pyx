@@ -39,7 +39,7 @@ cdef class Client(Communication):
         super(Client, self).__init__()
         print "Calling Client.__init__"
         self.rank = int(os.environ.get("ZMPI_RANK", "0"))
-        self.size = int(os.environ.get("ZMPI_SIZE", "0"))
+        self.size = int(os.environ.get("ZMPI_SIZE", "1"))
         self.sock_sub = self.context.socket(zmq.SUB)
         try:
             self.sock_sub.connect(os.environ["ZMPI_MASTER"])
