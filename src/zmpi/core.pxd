@@ -17,3 +17,6 @@
 
 cdef public struct MPI_Status:
     int state
+
+ctypedef public int MPI_Comm
+ctypedef public int MPI_Datatype

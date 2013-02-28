@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from zmpi.core cimport MPI_Status
+from zmpi.core cimport MPI_Comm, MPI_Datatype, MPI_Status
 from zmpi.communication cimport Client
 
 cdef Client client
@@ -24,10 +24,6 @@ cdef Client client
 cdef public int MPI_INT = 1
 
 cdef public void *MPI_STATUS_IGNORE = NULL
-
-ctypedef public int MPI_Comm
-ctypedef public int MPI_Datatype
-
 cdef public int MPI_COMM_WORLD = 0
 
 cdef public void ZMPI_Init(int *argc, char ***argv):
