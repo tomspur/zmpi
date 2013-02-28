@@ -18,6 +18,7 @@
 #import multiprocessing
 from zmq.core.context cimport Context
 from zmq.core.socket cimport Socket
+from zmpi.core cimport MPI_Comm, MPI_Datatype, MPI_Status
 
 cdef class Communication:#(multiprocessing.Process):
     cdef Context context
@@ -29,7 +30,10 @@ cdef class Communication:#(multiprocessing.Process):
     cdef public int rank
 
 cdef class Client(Communication):
-    pass
+    cdef void send_to(self, char *buf, int count, MPI_Datatype datatype, int dest,
+                      int tag, MPI_Comm comm)
+    cdef MPI_Status *recv_from(self, char *buf, int count, MPI_Datatype datatype, int dest,
+                               int tag, MPI_Comm comm)
 
 cdef class Master(Communication):
     cdef str cmd

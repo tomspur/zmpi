@@ -9,4 +9,4 @@ mpimaster: 	mpimaster.pyx
 	gcc $(CFLAGS) mpimaster.c -o mpimaster -I/usr/include/python2.7/ -lpython2.7
 
 clean:
-	rm -rvf *.c *.h *.so zmpi/*.so zmpi/*h zmpi/*.c build mpirun
+	rm -rvf *.c *.h *.so zmpi/*.so zmpi/*h zmpi/*.c build mpirun mpimaster

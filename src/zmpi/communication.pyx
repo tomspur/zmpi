@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from zmpi.core cimport MPI_Comm, MPI_Datatype, MPI_Status
+
 #import multiprocessing
 import os
 import zmq
@@ -48,6 +50,17 @@ cdef class Client(Communication):
 
     def __del__(self):
         print "Calling Client.__del__"
+
+    cdef void send_to(self, char *buf, int count, MPI_Datatype datatype, int dest,
+                      int tag, MPI_Comm comm):
+        if dest == self.get_rank(comm):
+            return
+
+    cdef MPI_Status *recv_from(self, char *buf, int count, MPI_Datatype datatype, int dest,
+                               int tag, MPI_Comm comm):
+        if dest == self.get_rank(comm):
+            return NULL
+        return NULL
 
 
 cdef class Master(Communication):

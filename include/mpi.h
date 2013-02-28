@@ -21,6 +21,7 @@
 
 /* Expose Python.h into zmpi */
 #include <Python.h>
+#include <zmpi/core.h>
 #include <libzmpi.h>
 
 /* temporary for printing */
