@@ -58,9 +58,16 @@ cdef public void MPI_Comm_size(MPI_Comm comm, int *size):
 
 cdef public void MPI_Send(void *buf, int count, MPI_Datatype datatype, int dest,
                           int tag, MPI_Comm comm):
-    pass
+    if dest == client.rank:
+        return
+    else:
+        pass
 
 cdef public void MPI_Recv(void *buf, int count, MPI_Datatype datatype, int dest,
                           int tag, MPI_Comm comm, MPI_Status *status):
     if status != NULL:
         raise NotImplementedError
+    if dest == client.rank:
+        return
+    else:
+        pass
