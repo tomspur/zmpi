@@ -26,10 +26,12 @@ cdef class Communication:#(multiprocessing.Process):
     cdef Socket sock_sub
     cdef int port_pub
     cdef int port_sub
-    cdef public int size
-    cdef public int rank
 
 cdef class Client(Communication):
+    cdef object rank
+    cdef object size
+    cdef int get_rank(self, MPI_Comm comm)
+    cdef int get_size(self, MPI_Comm comm)
     cdef void send_to(self, char *buf, int count, MPI_Datatype datatype, int dest,
                       int tag, MPI_Comm comm)
     cdef MPI_Status *recv_from(self, char *buf, int count, MPI_Datatype datatype, int dest,
@@ -39,4 +41,5 @@ cdef class Master(Communication):
     cdef str cmd
     # TODO ndarray?
     cdef object ranks
+    cdef int size
     cpdef run(self)

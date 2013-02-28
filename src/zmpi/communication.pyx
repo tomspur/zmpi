@@ -27,8 +27,6 @@ cdef class Communication:
     """Common communication tasks shared between Master and Clients.
     """
     def __init__(self):
-        self.rank = 0
-        self.size = 0
         self.context = zmq.Context()
         self.sock_pub = self.context.socket(zmq.PUB)
         self.port_pub = self.sock_pub.bind_to_random_port("tcp://*")
@@ -40,8 +38,8 @@ cdef class Client(Communication):
     def __init__(self):
         super(Client, self).__init__()
         print "Calling Client.__init__"
-        self.rank = int(os.environ.get("ZMPI_RANK", "0"))
-        self.size = int(os.environ.get("ZMPI_SIZE", "1"))
+        self.rank = {0: int(os.environ.get("ZMPI_RANK", "0"))}
+        self.size = {0: int(os.environ.get("ZMPI_SIZE", "1"))}
         self.sock_sub = self.context.socket(zmq.SUB)
         try:
             self.sock_sub.connect(os.environ["ZMPI_MASTER"])
@@ -50,6 +48,16 @@ cdef class Client(Communication):
 
     def __del__(self):
         print "Calling Client.__del__"
+
+    cdef int get_rank(self, MPI_Comm comm):
+        """Get rank in the communicator.
+        """
+        return self.rank[comm]
+
+    cdef int get_size(self, MPI_Comm comm):
+        """Get size in the communicator.
+        """
+        return self.size[comm]
 
     cdef void send_to(self, char *buf, int count, MPI_Datatype datatype, int dest,
                       int tag, MPI_Comm comm):

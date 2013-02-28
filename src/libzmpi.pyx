@@ -38,16 +38,10 @@ cdef public void ZMPI_Finalize():
     del client
 
 cdef public void MPI_Comm_rank(MPI_Comm comm, int *rank):
-    if comm == MPI_COMM_WORLD:
-        rank[0] = client.rank
-    else:
-        raise NotImplementedError
+    rank[0] = client.get_rank(comm)
 
 cdef public void MPI_Comm_size(MPI_Comm comm, int *size):
-    if comm == MPI_COMM_WORLD:
-        size[0] = client.size
-    else:
-        raise NotImplementedError
+    size[0] = client.get_size(comm)
 
 cdef public void MPI_Send(char *buf, int count, MPI_Datatype datatype, int dest,
                           int tag, MPI_Comm comm):
