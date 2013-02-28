@@ -42,7 +42,6 @@ cdef public void ZMPI_Finalize():
     del client
 
 cdef public void MPI_Comm_rank(MPI_Comm comm, int *rank):
-    global client
     if comm == MPI_COMM_WORLD:
         rank[0] = client.rank
     else:
