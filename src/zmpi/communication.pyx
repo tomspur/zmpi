@@ -45,6 +45,8 @@ cdef class Client(Communication):
             self.sock_sub.connect(os.environ["ZMPI_MASTER"])
         except KeyError:
             pass
+        self.sock_rep = self.context.socket(zmq.REQ)
+        self.port_rep = self.sock_rep.bind_to_random_port("tcp://*")
 
     def __del__(self):
         print "Calling Client.__del__"

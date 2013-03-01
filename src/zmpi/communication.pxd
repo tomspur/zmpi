@@ -28,6 +28,8 @@ cdef class Communication:#(multiprocessing.Process):
     cdef int port_sub
 
 cdef class Client(Communication):
+    cdef Socket sock_rep
+    cdef int port_rep
     cdef object rank
     cdef object size
     cdef int get_rank(self, MPI_Comm comm)
