@@ -23,13 +23,14 @@ from zmpi.core cimport MPI_Comm, MPI_Datatype, MPI_Status
 cdef class Communication:#(multiprocessing.Process):
     cdef Context context
     cdef Socket sock_pub
+    cdef Socket sock_pull
     cdef Socket sock_sub
     cdef int port_pub
+    cdef int port_pull
     cdef int port_sub
 
 cdef class Client(Communication):
-    cdef Socket sock_rep
-    cdef int port_rep
+    cdef Socket sock_push
     cdef object rank
     cdef object size
     cdef int get_rank(self, MPI_Comm comm)

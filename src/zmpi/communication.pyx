@@ -30,6 +30,8 @@ cdef class Communication:
         self.context = zmq.Context()
         self.sock_pub = self.context.socket(zmq.PUB)
         self.port_pub = self.sock_pub.bind_to_random_port("tcp://*")
+        self.sock_pull = self.context.socket(zmq.PULL)
+        self.port_pull = self.sock_pub.bind_to_random_port("tcp://*")
 
 
 cdef class Client(Communication):
@@ -40,13 +42,13 @@ cdef class Client(Communication):
         print "Calling Client.__init__"
         self.rank = {0: int(os.environ.get("ZMPI_RANK", "0"))}
         self.size = {0: int(os.environ.get("ZMPI_SIZE", "1"))}
+        self.sock_push = self.context.socket(zmq.PUSH)
         self.sock_sub = self.context.socket(zmq.SUB)
         try:
-            self.sock_sub.connect(os.environ["ZMPI_MASTER"])
+            self.sock_push.connect(os.environ["ZMPI_MASTER_PULL"])
+            self.sock_sub.connect(os.environ["ZMPI_MASTER_PUB"])
         except KeyError:
             pass
-        self.sock_rep = self.context.socket(zmq.REQ)
-        self.port_rep = self.sock_rep.bind_to_random_port("tcp://*")
 
     def __del__(self):
         print "Calling Client.__del__"
@@ -95,7 +97,8 @@ cdef class Master(Communication):
             envs.append(os.environ.copy())
             envs[i]["ZMPI_RANK"] = str(i)
             envs[i]["ZMPI_SIZE"] = str(self.size)
-            envs[i]["ZMPI_MASTER"] = "tcp://127.0.0.1:%d"%(self.port_pub)
+            envs[i]["ZMPI_MASTER_PUB"] = "tcp://127.0.0.1:%d"%(self.port_pub)
+            envs[i]["ZMPI_MASTER_PULL"] = "tcp://127.0.0.1:%d"%(self.port_pull)
 
         if DEBUG:
             print "Starting %d processes."% self.size
