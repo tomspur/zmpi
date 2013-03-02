@@ -103,11 +103,8 @@ cdef class Master(Communication):
             print "Starting %d processes."% self.size
             print "Executable:", self.cmd
 
-        pool = []
-        for i in self.ranks:
-            pool.append(subprocess.Popen(self.cmd, shell=True, env=envs[i]))
+        pool = [subprocess.Popen(self.cmd, shell=True, env=envs[i])
+                for i in self.ranks]
         
-        ret = []
-        for item in pool:
-            ret.append(item.wait())
+        ret = [client.wait() for client in pool]
         return -min(ret)
