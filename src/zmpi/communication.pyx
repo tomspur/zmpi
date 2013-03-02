@@ -17,7 +17,6 @@
 
 from zmpi.core cimport MPI_Comm, MPI_Datatype, MPI_Status
 
-#import multiprocessing
 import os
 import zmq
 

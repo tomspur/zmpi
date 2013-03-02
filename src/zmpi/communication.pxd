@@ -15,12 +15,11 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#import multiprocessing
 from zmq.core.context cimport Context
 from zmq.core.socket cimport Socket
 from zmpi.core cimport MPI_Comm, MPI_Datatype, MPI_Status
 
-cdef class Communication:#(multiprocessing.Process):
+cdef class Communication:
     cdef Context context
     cdef Socket sock_pub
     cdef Socket sock_pull
