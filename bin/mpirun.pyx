@@ -20,9 +20,6 @@ import os
 import subprocess
 import sys
 
-from zmpi.communication cimport Master
-cdef Master master
-
 parser = argparse.ArgumentParser(description='Start MPI jobs.')
 parser.add_argument("-np", dest="np", type=int)
 args, pos_args = parser.parse_known_args()
