@@ -17,6 +17,9 @@
 
 from zmpi.core cimport MPI_Comm, MPI_Datatype, MPI_Status
 
+cdef extern from "zmpi.h":
+    int MPI_INT
+
 import os
 import time
 import zmq
@@ -80,11 +83,17 @@ cdef class Client(Communication):
                       int tag, MPI_Comm comm):
         if dest == self.get_rank(comm):
             return
+        self.init[dest]["PUSH"].send_pyobj((<char *> buf)[0])
 
     cdef MPI_Status *recv_from(self, char *buf, int count, MPI_Datatype datatype, int dest,
                                int tag, MPI_Comm comm):
         if dest == self.get_rank(comm):
             return NULL
+        msg = self.sock_pull.recv_pyobj()
+        if datatype == MPI_INT:
+            (<int *>buf)[0] = <int> msg
+        else:
+            raise NotImplementedError("MPI_Datatype %s is not supported."%(datatype))
         return NULL
 
 

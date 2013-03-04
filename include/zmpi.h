@@ -16,29 +16,10 @@
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef MPI_H
-#define MPI_H
+#ifndef ZMPI_H
+#define ZMPI_H
 
-/* Expose Python.h into zmpi */
-#include <Python.h>
-#include <zmpi/core.h>
-#include <libzmpi.h>
+/* define all datatypes */
+#define MPI_INT 1
 
-#include <zmpi.h>
-
-/* temporary for printing */
-#include <stdlib.h>
-
-/* wrap init and finalize of zmpi */
-void MPI_Init(int *argc, char ***argv) {
-    Py_Initialize();
-    initlibzmpi();
-    ZMPI_Init(argc, argv);
-};
-
-void MPI_Finalize() {
-    ZMPI_Finalize();
-    Py_Finalize();
-};
-
-#endif /* MPI_H */
+#endif /* ZMPI_H */

@@ -13,6 +13,7 @@ ext_modules = [
              ),
     Extension("zmpi.communication",
               ["zmpi/communication.pyx"],
+              include_dirs = ["../include"]
              )
     ]
 

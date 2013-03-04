@@ -20,9 +20,6 @@ from zmpi.communication cimport Client
 
 cdef Client client
 
-# data types
-cdef public int MPI_INT = 1
-
 cdef public void *MPI_STATUS_IGNORE = NULL
 cdef public int MPI_COMM_WORLD = 0
 
