@@ -53,8 +53,13 @@ cdef class Client(Communication):
                             "rank": self.rank,
                             "PULL": "tcp://127.0.0.1:%d"%self.port_pull,
                         }
-            self.sock_push.send_json(self.init)
-            self.init = self.sock_sub.recv_json()
+            self.sock_push.send_pyobj(self.init)
+            self.init = self.sock_sub.recv_pyobj()
+
+            for client in self.init:
+                if client != self.rank[0]:
+                    self.init[client]["PUSH"] = self.context.socket(zmq.PUSH)
+                    self.init[client]["PUSH"].connect(self.init[client]["PULL"])
         except KeyError:
             pass
 
@@ -102,9 +107,9 @@ cdef class Master(Communication):
         """
         all_sockets = {}
         for i in range(self.size):
-            message = self.sock_pull.recv_json()
-            all_sockets[message["rank"]["0"]] = message
-        self.sock_pub.send_json(all_sockets)
+            message = self.sock_pull.recv_pyobj()
+            all_sockets[message["rank"][0]] = message
+        self.sock_pub.send_pyobj(all_sockets)
 
     cpdef run(self):
         import subprocess
