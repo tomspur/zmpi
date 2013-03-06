@@ -17,7 +17,7 @@
 
 from zmq.core.context cimport Context
 from zmq.core.socket cimport Socket
-from zmpi.core cimport MPI_Comm, MPI_Datatype, MPI_Status
+from zmpi.core cimport MPI_Comm, MPI_Datatype, MPI_Op, MPI_Status
 
 cdef class Communication:
     cdef Context context
@@ -39,6 +39,8 @@ cdef class Client(Communication):
                       int tag, MPI_Comm comm)
     cdef MPI_Status *recv_from(self, char *buf, int count, MPI_Datatype datatype, int dest,
                                int tag, MPI_Comm comm)
+    cdef MPI_reduce(self, char *bufout, char *bufin, int count, MPI_Datatype datatype,
+                    MPI_Op op, int dest, MPI_Comm comm)
 
 cdef class Master(Communication):
     cdef str cmd

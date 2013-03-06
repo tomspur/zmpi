@@ -22,4 +22,7 @@
 /* define all datatypes */
 #define MPI_INT 1
 
+/* define reduce operators */
+#define MPI_SUM 1
+
 #endif /* ZMPI_H */

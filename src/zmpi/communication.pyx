@@ -19,6 +19,7 @@ from zmpi.core cimport MPI_Comm, MPI_Datatype, MPI_Status
 
 cdef extern from "zmpi.h":
     int MPI_INT
+    int MPI_SUM
 
 import os
 import time
@@ -103,6 +104,33 @@ cdef class Client(Communication):
             else:
                 raise NotImplementedError("MPI_Datatype %s is not supported."%(datatype))
         return NULL
+
+    cdef MPI_reduce(self, char *bufin, char *bufout, int count, MPI_Datatype datatype,
+                    MPI_Op op, int dest, MPI_Comm comm):
+        if op == MPI_SUM:
+            # TODO implement fancier algorithm for reducing
+            if self.get_rank(comm) == dest:
+                ret = []
+                if datatype == MPI_INT:
+                    for i in range(count):
+                        ret.append((<int *> bufin)[i])
+                else:
+                    raise NotImplementedError("MPI_Datatype %s is not supported."%(datatype))
+                for i in range(self.get_size(comm)):
+                    if i == dest:
+                        continue
+                    msg = self.sock_pull.recv_pyobj()
+                    for j, item in enumerate(msg):
+                        ret[j] += item
+                for i in range(count):
+                    if datatype == MPI_INT:
+                        (<int *>bufout)[i] = ret[i]
+                    else:
+                        raise NotImplementedError("MPI_Datatype %s is not supported."%(datatype))
+            else:
+                self.send_to(bufin, count, datatype, dest, 0, comm)
+        else:
+            raise NotImplementedError("MPI_Op %s is not supported."%(op))
 
 
 cdef class Master(Communication):

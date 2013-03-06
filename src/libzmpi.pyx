@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from zmpi.core cimport MPI_Comm, MPI_Datatype, MPI_Status
+from zmpi.core cimport MPI_Comm, MPI_Datatype, MPI_Op, MPI_Status
 from zmpi.communication cimport Client
 
 cdef Client client
@@ -49,3 +49,7 @@ cdef public void MPI_Recv(char *buf, int count, MPI_Datatype datatype, int dest,
     state = client.recv_from(buf, count, datatype, dest, tag, comm)
     if status != MPI_STATUS_IGNORE:
         status = state
+
+cdef public void MPI_Reduce(char *bufout, char *bufin, int count, MPI_Datatype datatype,
+                            MPI_Op op, int dest, MPI_Comm comm):
+    client.MPI_reduce(bufout, bufin, count, datatype, op, dest, comm)

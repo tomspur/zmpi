@@ -4,3 +4,4 @@ mpirun.c
 zmpi.c
 zmpi.h
 libzmpi.so
+*.c
