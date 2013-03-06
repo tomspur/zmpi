@@ -83,17 +83,25 @@ cdef class Client(Communication):
                       int tag, MPI_Comm comm):
         if dest == self.get_rank(comm):
             return
-        self.init[dest]["PUSH"].send_pyobj((<char *> buf)[0])
+        # TODO send numpy array
+        sending = []
+        if datatype == MPI_INT:
+            for i in range(count):
+                sending.append((<int *> buf)[i])
+            self.init[dest]["PUSH"].send_pyobj(sending)
+        else:
+            raise NotImplementedError("MPI_Datatype %s is not supported."%(datatype))
 
     cdef MPI_Status *recv_from(self, char *buf, int count, MPI_Datatype datatype, int dest,
                                int tag, MPI_Comm comm):
         if dest == self.get_rank(comm):
             return NULL
         msg = self.sock_pull.recv_pyobj()
-        if datatype == MPI_INT:
-            (<int *>buf)[0] = <int> msg
-        else:
-            raise NotImplementedError("MPI_Datatype %s is not supported."%(datatype))
+        for i in range(count):
+            if datatype == MPI_INT:
+                (<int *>buf)[i] = msg[i]
+            else:
+                raise NotImplementedError("MPI_Datatype %s is not supported."%(datatype))
         return NULL
 
 

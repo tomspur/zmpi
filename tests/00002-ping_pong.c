@@ -18,7 +18,7 @@ int main (int argc, char **argv) {
             }
         } else {
             MPI_Recv(&number, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            printf("Process %d received number %d from process %d\n", rank, number, rank-1);
+            printf("Process %d received number %d from process %d\n", rank, number, 0);
             assert(number == rank*rank);
         }
     } else {
