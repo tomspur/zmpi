@@ -6,7 +6,7 @@ bins:
 libzmpi:
 	cd src; make libzmpi
 
-check:
+check:	bins libzmpi
 	cd tests; make check
 
 clean:
