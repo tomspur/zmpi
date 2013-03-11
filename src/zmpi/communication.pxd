@@ -32,7 +32,7 @@ cdef class Client(Communication):
     cdef Socket sock_push
     cdef object rank
     cdef object size
-    cdef object init
+    cdef object _send
     cdef int get_rank(self, MPI_Comm comm)
     cdef int get_size(self, MPI_Comm comm)
     cdef void send_to(self, char *buf, int count, MPI_Datatype datatype, int dest,

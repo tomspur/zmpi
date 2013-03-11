@@ -22,6 +22,7 @@ cdef extern from "zmpi.h":
     int MPI_INT
     int MPI_FLOAT
     int MPI_SUM
+    int MPI_COMM_WORLD
 
 import os
 import time
@@ -55,17 +56,19 @@ cdef class Client(Communication):
             self.sock_sub.setsockopt(zmq.SUBSCRIBE, "")
             self.sock_push.connect(os.environ["ZMPI_MASTER_PULL"])
             time.sleep(0.1)
-            self.init = {
+            self._send = {
                             "rank": self.rank,
                             "PULL": "tcp://127.0.0.1:%d"%self.port_pull,
                         }
-            self.sock_push.send_pyobj(self.init)
-            self.init = self.sock_sub.recv_pyobj()
+            self.sock_push.send_pyobj(self._send)
+            self._send = self.sock_sub.recv_pyobj()
 
-            for client in self.init:
+            for client in self._send[MPI_COMM_WORLD]:
                 if client != self.rank[0]:
-                    self.init[client]["PUSH"] = self.context.socket(zmq.PUSH)
-                    self.init[client]["PUSH"].connect(self.init[client]["PULL"])
+                    self._send[MPI_COMM_WORLD][client]["PUSH"] = self.context.socket(zmq.PUSH)
+                    self._send[MPI_COMM_WORLD][client]["PUSH"].connect(self._send[MPI_COMM_WORLD][client]["PULL"])
+                    print client
+            print self._send
         except KeyError:
             pass
 
@@ -99,7 +102,7 @@ cdef class Client(Communication):
                 sending.append((<float *> buf)[i])
         else:
             raise NotImplementedError("MPI_Datatype %s is not supported."%(datatype))
-        self.init[dest]["PUSH"].send_pyobj(sending)
+        self._send[MPI_COMM_WORLD][dest]["PUSH"].send_pyobj(sending)
 
     cdef MPI_Status *recv_from(self, char *buf, int count, MPI_Datatype datatype, int dest,
                                int tag, MPI_Comm comm):
@@ -172,10 +175,10 @@ cdef class Master(Communication):
     cdef handle_startup(self):
         """Collect PULL sockets of each Client and broadcast them around.
         """
-        all_sockets = {}
+        all_sockets = {MPI_COMM_WORLD: {}}
         for i in range(self.size):
             message = self.sock_pull.recv_pyobj()
-            all_sockets[message["rank"][0]] = message
+            all_sockets[MPI_COMM_WORLD][message["rank"][0]] = message
         self.sock_pub.send_pyobj(all_sockets)
 
     cpdef run(self):

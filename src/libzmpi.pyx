@@ -21,7 +21,6 @@ from zmpi.communication cimport Client
 cdef Client client
 
 cdef public void *MPI_STATUS_IGNORE = NULL
-cdef public int MPI_COMM_WORLD = 0
 
 cdef public void ZMPI_Init(int *argc, char ***argv):
     global client

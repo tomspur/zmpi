@@ -19,6 +19,8 @@
 #ifndef ZMPI_H
 #define ZMPI_H
 
+#define MPI_COMM_WORLD 0
+
 /* define all datatypes */
 #define MPI_INT 1
 #define MPI_FLOAT 2
