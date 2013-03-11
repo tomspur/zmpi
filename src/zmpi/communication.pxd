@@ -48,4 +48,4 @@ cdef class Master(Communication):
     cdef object ranks
     cdef int size
     cdef handle_startup(self)
-    cpdef run(self)
+    cdef run(self)

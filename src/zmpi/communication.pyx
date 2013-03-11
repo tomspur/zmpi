@@ -181,7 +181,7 @@ cdef class Master(Communication):
             all_sockets[MPI_COMM_WORLD][message["rank"][0]] = message
         self.sock_pub.send_pyobj(all_sockets)
 
-    cpdef run(self):
+    cdef run(self):
         import subprocess
         # setup environments
         envs = []
