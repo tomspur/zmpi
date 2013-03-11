@@ -21,6 +21,8 @@
 
 /* define all datatypes */
 #define MPI_INT 1
+#define MPI_FLOAT 2
+#define MPI_DOUBLE 3
 
 /* define reduce operators */
 #define MPI_SUM 1

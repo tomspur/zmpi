@@ -18,7 +18,9 @@
 from zmpi.core cimport MPI_Comm, MPI_Datatype, MPI_Status
 
 cdef extern from "zmpi.h":
+    int MPI_DOUBLE
     int MPI_INT
+    int MPI_FLOAT
     int MPI_SUM
 
 import os
@@ -89,9 +91,15 @@ cdef class Client(Communication):
         if datatype == MPI_INT:
             for i in range(count):
                 sending.append((<int *> buf)[i])
-            self.init[dest]["PUSH"].send_pyobj(sending)
+        elif datatype == MPI_DOUBLE:
+            for i in range(count):
+                sending.append((<double *> buf)[i])
+        elif datatype == MPI_FLOAT:
+            for i in range(count):
+                sending.append((<float *> buf)[i])
         else:
             raise NotImplementedError("MPI_Datatype %s is not supported."%(datatype))
+        self.init[dest]["PUSH"].send_pyobj(sending)
 
     cdef MPI_Status *recv_from(self, char *buf, int count, MPI_Datatype datatype, int dest,
                                int tag, MPI_Comm comm):
@@ -101,6 +109,10 @@ cdef class Client(Communication):
         for i in range(count):
             if datatype == MPI_INT:
                 (<int *>buf)[i] = msg[i]
+            elif datatype == MPI_DOUBLE:
+                (<double *>buf)[i] = msg[i]
+            elif datatype == MPI_FLOAT:
+                (<float *>buf)[i] = msg[i]
             else:
                 raise NotImplementedError("MPI_Datatype %s is not supported."%(datatype))
         return NULL
@@ -114,6 +126,12 @@ cdef class Client(Communication):
                 if datatype == MPI_INT:
                     for i in range(count):
                         ret.append((<int *> bufin)[i])
+                elif datatype == MPI_DOUBLE:
+                    for i in range(count):
+                        ret.append((<double *> bufin)[i])
+                elif datatype == MPI_FLOAT:
+                    for i in range(count):
+                        ret.append((<float *> bufin)[i])
                 else:
                     raise NotImplementedError("MPI_Datatype %s is not supported."%(datatype))
                 for i in range(self.get_size(comm)):
@@ -125,6 +143,10 @@ cdef class Client(Communication):
                 for i in range(count):
                     if datatype == MPI_INT:
                         (<int *>bufout)[i] = ret[i]
+                    elif datatype == MPI_FLOAT:
+                        (<float *>bufout)[i] = ret[i]
+                    elif datatype == MPI_DOUBLE:
+                        (<double *>bufout)[i] = ret[i]
                     else:
                         raise NotImplementedError("MPI_Datatype %s is not supported."%(datatype))
             else:
