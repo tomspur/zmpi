@@ -35,6 +35,8 @@ cdef class Client(Communication):
     cdef object _send
     cdef int get_rank(self, MPI_Comm comm)
     cdef int get_size(self, MPI_Comm comm)
+    cdef void _send_to(self, object obj, int dest, int tag, MPI_Comm comm)
+    cdef object _recv_from(self, int dest, int tag, MPI_Comm comm)
     cdef void send_to(self, char *buf, int count, MPI_Datatype datatype, int dest,
                       int tag, MPI_Comm comm)
     cdef MPI_Status *recv_from(self, char *buf, int count, MPI_Datatype datatype, int dest,

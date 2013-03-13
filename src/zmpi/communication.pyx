@@ -85,6 +85,42 @@ cdef class Client(Communication):
         """
         return self.size[comm]
 
+    cdef void _send_to(self, object obj, int dest, int tag, MPI_Comm comm):
+        """Send an object to a specific rank and tag in a communicator.
+
+        Parameters:
+        -----------
+        obj : object
+            The object to send.
+        dest : int
+            The destination rank.
+        tag : int
+            The tag applied to this communication.
+        comm: MPI_Comm
+            The communication channel to be used.
+        """
+        self._send[MPI_COMM_WORLD][dest]["PUSH"].send_pyobj([self.get_rank(comm), comm, tag, obj])
+
+    cdef object _recv_from(self, int dest, int tag, MPI_Comm comm):
+        """Receive an object from a specific rank and tag in a communicator.
+
+        Parameters:
+        -----------
+        dest : int
+            The incoming rank.
+        tag : int
+            The tag applied to this communication.
+        comm: MPI_Comm
+            The communication channel to be used.
+
+        Returns:
+        --------
+        obj : object
+            The object that is received.
+        """
+        dest_in, comm_in, tag_in, obj = self.sock_pull.recv_pyobj()
+        return obj
+
     cdef void send_to(self, char *buf, int count, MPI_Datatype datatype, int dest,
                       int tag, MPI_Comm comm):
         if dest == self.get_rank(comm):
@@ -102,13 +138,13 @@ cdef class Client(Communication):
                 sending.append((<float *> buf)[i])
         else:
             raise NotImplementedError("MPI_Datatype %s is not supported."%(datatype))
-        self._send[MPI_COMM_WORLD][dest]["PUSH"].send_pyobj(sending)
+        self._send_to(sending, dest, tag, comm)
 
     cdef MPI_Status *recv_from(self, char *buf, int count, MPI_Datatype datatype, int dest,
                                int tag, MPI_Comm comm):
         if dest == self.get_rank(comm):
             return NULL
-        msg = self.sock_pull.recv_pyobj()
+        msg = self._recv_from(dest, tag, comm)
         for i in range(count):
             if datatype == MPI_INT:
                 (<int *>buf)[i] = msg[i]
@@ -140,8 +176,8 @@ cdef class Client(Communication):
                 for i in range(self.get_size(comm)):
                     if i == dest:
                         continue
-                    msg = self.sock_pull.recv_pyobj()
-                    for j, item in enumerate(msg):
+                    obj = self._recv_from(i, 0, comm)
+                    for j, item in enumerate(obj):
                         ret[j] += item
                 for i in range(count):
                     if datatype == MPI_INT:
