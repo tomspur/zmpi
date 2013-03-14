@@ -67,8 +67,6 @@ cdef class Client(Communication):
                 if client != self.rank[0]:
                     self._send[MPI_COMM_WORLD][client]["PUSH"] = self.context.socket(zmq.PUSH)
                     self._send[MPI_COMM_WORLD][client]["PUSH"].connect(self._send[MPI_COMM_WORLD][client]["PULL"])
-                    print client
-            print self._send
         except KeyError:
             pass
 
