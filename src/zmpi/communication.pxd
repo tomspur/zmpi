@@ -15,8 +15,8 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from zmq.core.context cimport Context
-from zmq.core.socket cimport Socket
+from zmq.backend.cython.context cimport Context
+from zmq.backend.cython.socket cimport Socket
 from zmpi.core cimport MPI_Comm, MPI_Datatype, MPI_Op, MPI_Status
 
 cdef class Communication:

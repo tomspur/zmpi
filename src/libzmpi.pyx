@@ -31,7 +31,9 @@ cdef public void ZMPI_Init(int *argc, char ***argv):
 
 cdef public void ZMPI_Finalize():
     global client
-    del client
+    #TODO Deletion of global C variable not allowed anymore with newer cython
+    #     Properly shut it down
+    #del client
 
 cdef public void MPI_Comm_rank(MPI_Comm comm, int *rank):
     rank[0] = client.get_rank(comm)
